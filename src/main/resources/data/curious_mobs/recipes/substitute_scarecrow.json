@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "hhh",
+    "hth",
+    "hhh"
+  ],
+  "key": {
+    "h": {
+      "item": "minecraft:hay_block"
+    },
+    "t": {
+      "item": "minecraft:totem_of_undying"
+    }
+  },
+  "result": {
+    "item": "curious_mobs:substitute_scarecrow"
+  }
+}

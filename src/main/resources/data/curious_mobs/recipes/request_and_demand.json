@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "tsf",
+    "   "
+  ],
+  "key": {
+    "t": {
+      "item": "minecraft:totem_of_undying"
+    },
+    "s": {
+      "item": "curious_mobs:substitute_scarecrow"
+    },
+    "f": {
+      "item": "minecraft:iron_sword"
+    }
+  },
+  "result": {
+    "item": "curious_mobs:request_and_demand"
+  }
+}

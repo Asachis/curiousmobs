@@ -1,0 +1,15 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "curious_mobs:item/devil_contract"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "damaged": 1,
+        "damage": 0.5
+      },
+      "model": "curious_mobs:item/devil_contract_damaged"
+    }
+  ]
+}

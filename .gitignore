@@ -1,0 +1,47 @@
+# eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
+
+# Files from Forge MDK
+forge*changelog.txt
+
+# 反编译 / 解压残留产物（Forge 构建时产生，非源码，仅限仓库根目录）
+/assets/
+/data/
+/net/
+/patches/
+/META-INF/
+/.cache/
+/libs/
+/libs_test/
+
+# 开发期残留（仅限仓库根目录）
+/curse_transfer.mixins.json
+/curse_transfer.refmap.json
+/celestial_artifacts.mixins.json
+/celestial_artifacts.refmap.json
+/goety.mixins.json
+/goety.refmap.json
+/curios_icon.png
+/Goety.png
+/logo.png
+/pack.mcmeta

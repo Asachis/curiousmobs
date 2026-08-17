@@ -1,0 +1,24 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "com.curious_mobs.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "curious_mobs.refmap.json",
+  "priority": 1000,
+  "mixins": [
+    "CuriosEntityManagerMixin",
+    "SuperpositionHandlerMixin",
+    "CursedRingMixin",
+    "EnigmaticEventHandlerMixin",
+    "CuriosHelperMixin",
+    "FcaUtilMixin",
+    "MagnetDefaultOffMixin",
+    "MyGoUtilProtectMixin",
+    "EsotericTesseractCompatMixin",
+    "CapabilityProviderInvoker",
+    "PlayerPermanentMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
