@@ -106,16 +106,20 @@ public final class CurseEvents {
       return;
     }
     CompoundTag stashed = data.getCompound(CuriousMobs.STASHED_CAPS_KEY);
-    data.remove(CuriousMobs.STASHED_CAPS_KEY);
     if (entity instanceof CapabilityProviderInvoker invoker) {
       try {
         invoker.curiousMobs$deserializeCaps(stashed);
+        // 恢复成功才清除暂存键，失败时保留以便下次 join 重试；
+        // 捕获的异常已在下方记录，不会阻断实体入世界。
+        data.remove(CuriousMobs.STASHED_CAPS_KEY);
         CuriousMobs.LOGGER.info("[CT] restored ForgeCaps for {} from tesseract",
             entity.getName().getString());
       } catch (Throwable t) {
         CuriousMobs.LOGGER.warn("[CT] failed to restore ForgeCaps for {}: {}",
             entity.getName().getString(), t.toString());
       }
+    } else {
+      data.remove(CuriousMobs.STASHED_CAPS_KEY);
     }
   }
 

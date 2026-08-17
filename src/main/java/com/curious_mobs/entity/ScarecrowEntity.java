@@ -23,6 +23,10 @@ public class ScarecrowEntity extends PathfinderMob {
   public ScarecrowEntity(EntityType<? extends ScarecrowEntity> entityType, Level level) {
     super(entityType, level);
     this.setPersistenceRequired();
+    // 稻草人是静态装饰实体：无论由哪种方式生成（物品放置 / 命令 /
+    // 其它模组召唤）都关闭 AI，避免每 tick 的寻路/朝向逻辑把
+    // 设置好的朝向平滑重置回默认方向。
+    this.setNoAi(true);
   }
 
   public void setPlayerUuid(UUID uuid) {

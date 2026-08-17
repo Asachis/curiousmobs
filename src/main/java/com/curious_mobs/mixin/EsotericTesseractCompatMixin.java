@@ -245,8 +245,10 @@ public abstract class EsotericTesseractCompatMixin {
           }
         }
       }
+      // 只移除本仆从的标签，保留方匣自带的其它 NBT（自定义名等），
+      // 避免 setTag(new CompoundTag()) 清空整个物品数据。
+      stack.getTag().remove(tagInfo);
     }
-    stack.setTag(new CompoundTag());
     cir.setReturnValue(servantCount);
   }
 
