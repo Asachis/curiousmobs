@@ -12,13 +12,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * 永久解除：当玩家带有 curious_mobs:permanent 标记时，
- * 让 EL 认为该玩家不再"被诅咒"，从而关闭其全部被动诅咒逻辑
- * （中立生物主动攻击、经验减少、掉落降低等），但饰品仍佩戴在身上。
+ * 永久解除（解耦设计）：
  * <p>
- * hasCurio 是 EL 全部诅咒判定的唯一通用入口（七咒之戒已佩戴、幻翼生成
- * handler 等），在此单点否决，与 EnigmaticEventHandlerMixin /
- * PhantomSpawnerMixin 的入口级过滤器互为冗余加固，行为一致。
+ * 转移诅咒后玩家仍佩戴七咒之戒，但不再承受被动诅咒。
+ * EL 的两类判定在此分开处理：
+ * <ul>
+ *   <li>{@code isTheCursedOne}：身份判定（天体果实等物品使用门槛、武器加成、
+ *       击杀掉落加成、守护之心保护、世界诅咒标记等）→ 永久玩家返回
+ *       <b>true</b>，恢复 EL 原版行为，确保需要"承受七咒之人"的物品仍可用；</li>
+ *   <li>{@code hasCurio(entity, CURSED_RING)}：被动负面逻辑的唯一通用入口
+ *       （永久着火 / 无法入睡 / 击退减益 / 受击翻倍 / 药水效果等，见
+ *       EnigmaticEventHandlerMixin）→ 永久玩家返回 <b>false</b>，单点否决。</li>
+ * </ul>
+ * 唯一的 isTheCursedOne 负面调用点（onEntityHurt 的怪物伤害减益）由
+ * EnigmaticEventHandlerMixin 的 ordinal 定向 @Redirect 单独压制。
  */
 @Mixin(value = SuperpositionHandler.class, remap = false)
 public class SuperpositionHandlerMixin {
@@ -27,10 +34,10 @@ public class SuperpositionHandlerMixin {
       at = @At("HEAD"),
       cancellable = true,
       remap = false)
-  private static void curious_mobs$permanentlyFreedIsNotCursed(
+  private static void curious_mobs$permanentlyFreedKeepsIdentity(
       Player player, CallbackInfoReturnable<Boolean> cir) {
     if (CurseHelper.isPermanent(player)) {
-      cir.setReturnValue(false);
+      cir.setReturnValue(true);
     }
   }
 
