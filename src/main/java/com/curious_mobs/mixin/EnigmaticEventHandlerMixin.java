@@ -23,6 +23,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
  * （The Twist / EnderSlayer 等，随 SuperpositionHandlerMixin 恢复为 true），
  * 第 4 处（ordinal=3）是 CursedRing 的怪物伤害减益（负面），在此定向
  * 重定向为 false，permanent 玩家不再吃到该减益。
+ * <p>
+ * 另三处 hasCurio(CURSED_RING) 属于戒指的正面能力，同样被 hasCurio 的
+ * 全局过滤误伤，这里逐一定向恢复为 true（onHarvestCheck 无视采掘等级、
+ * onExperienceDrop 击杀经验加成、onProbableDeath 死亡保留戒指）。
  */
 @Mixin(value = EnigmaticEventHandler.class, remap = false)
 public class EnigmaticEventHandlerMixin {
@@ -71,10 +75,51 @@ public class EnigmaticEventHandlerMixin {
     return SuperpositionHandler.isTheCursedOne(player);
   }
 
+  @Redirect(method = "onHarvestCheck",
+      at = @At(value = "INVOKE",
+          target = "Lcom/aizistral/enigmaticlegacy/handlers/SuperpositionHandler;hasCurio" +
+              "(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/Item;)Z",
+          ordinal = 0,
+          remap = false),
+      remap = false)
+  private boolean curious_mobs$hasCurioHarvest(LivingEntity entity, Item curio) {
+    return curious_mobs$keepCurseCurio(entity, curio);
+  }
+
+  @Redirect(method = "onExperienceDrop",
+      at = @At(value = "INVOKE",
+          target = "Lcom/aizistral/enigmaticlegacy/handlers/SuperpositionHandler;hasCurio" +
+              "(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/Item;)Z",
+          ordinal = 1,
+          remap = false),
+      remap = false)
+  private boolean curious_mobs$hasCurioExp(LivingEntity entity, Item curio) {
+    return curious_mobs$keepCurseCurio(entity, curio);
+  }
+
+  @Redirect(method = "onProbableDeath",
+      at = @At(value = "INVOKE",
+          target = "Lcom/aizistral/enigmaticlegacy/handlers/SuperpositionHandler;hasCurio" +
+              "(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/Item;)Z",
+          ordinal = 0,
+          remap = false),
+      remap = false)
+  private boolean curious_mobs$hasCurioDeath(LivingEntity entity, Item curio) {
+    return curious_mobs$keepCurseCurio(entity, curio);
+  }
+
   private static boolean curious_mobs$filterHasCurio(LivingEntity entity, Item curio) {
     if (entity instanceof Player player && curio == EnigmaticItems.CURSED_RING
         && CurseHelper.isPermanent(player)) {
       return false;
+    }
+    return SuperpositionHandler.hasCurio(entity, curio);
+  }
+
+  private static boolean curious_mobs$keepCurseCurio(LivingEntity entity, Item curio) {
+    if (entity instanceof Player player && curio == EnigmaticItems.CURSED_RING
+        && CurseHelper.isPermanent(player)) {
+      return true;
     }
     return SuperpositionHandler.hasCurio(entity, curio);
   }
